@@ -15,10 +15,19 @@ provider "aws" {
     profile    = "default"
     region     = "us-east-1"
 }   
-variable "personal_website_domain" {
-    default = "franusi.com"
-}
 provider "github" {
   token = var.github_token
   owner = var.github_owner
+}
+variable "personal_website_domain" {
+  type = string
+}
+variable "github_token" {
+  type = string
+}
+variable "github_owner"{
+  type = string
+}
+variable "frontend_repo_name"{
+  type = string
 }

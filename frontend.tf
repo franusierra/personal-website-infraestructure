@@ -1,4 +1,24 @@
-resource "aws_s3_bucket" "s3_bucket" {
+resource "aws_s3_bucket" "dev_frontend_s3_bucket" {
+   bucket = "dev.${var.personal_website_domain}"
+   acl    = "public-read"
+   policy = <<POLICY
+{
+  "Version":"2012-10-17",
+  "Statement":[{
+    "Sid":"AddPerm",
+    "Effect":"Allow",
+    "Principal": "*",
+    "Action":["s3:GetObject"],
+    "Resource":["arn:aws:s3:::dev.${var.personal_website_domain}/*"]
+  }]
+}
+POLICY
+  website {
+    index_document = "index.html"
+    error_document = "index.html"
+  }
+}
+resource "aws_s3_bucket" "prod_frontend_s3_bucket" {
    bucket = var.personal_website_domain
    acl    = "public-read"
    policy = <<POLICY
@@ -33,7 +53,7 @@ resource "aws_cloudfront_distribution" "frontend_cloudfront_distribution" {
       origin_protocol_policy = "http-only"
       origin_ssl_protocols   = ["TLSv1", "TLSv1.1", "TLSv1.2"]
     }
-    domain_name = aws_s3_bucket.s3_bucket.website_endpoint
+    domain_name = aws_s3_bucket.prod_frontend_s3_bucket.website_endpoint
     origin_id   = var.personal_website_domain
   }
   
